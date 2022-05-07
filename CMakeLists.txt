@@ -57,20 +57,36 @@ add_definitions(
 
 # hw2_shooter
 add_executable(MineStrike
-		MineStrike/shooter.cpp
+		MineStrike/main.cpp
 	common/shader.cpp
 	common/shader.hpp
-	common/controls.cpp
-	common/controls.hpp
+	# common/controls.cpp
+	# common/controls.hpp
 	common/texture.cpp
 	common/texture.hpp
 	common/objloader.cpp
 	common/objloader.hpp
-	common/text2D.hpp
-	common/text2D.cpp
+	# common/text2D.hpp
+	# common/text2D.cpp
 
-		MineStrike/assets/shaders/StandardShading.vertexshader
-		MineStrike/assets/shaders/StandardShading.fragmentshader
+	MineStrike/Camera.cpp
+	MineStrike/Camera.hpp
+	MineStrike/Model.cpp
+	MineStrike/Model.hpp
+	MineStrike/Window.cpp
+	MineStrike/Window.hpp
+	MineStrike/Generate_VBO_VAO.cpp
+	MineStrike/Generate_VBO_VAO.hpp
+	MineStrike/Enemy.cpp
+	MineStrike/Projectile.hpp
+	MineStrike/Projectile.cpp
+	MineStrike/GameEngine.hpp
+	MineStrike/GameEngine.cpp
+	MineStrike/GameObject.hpp
+	MineStrike/GameObject.cpp
+
+		MineStrike/assets/shaders/TextureFragmentShader.fragmentshader
+		MineStrike/assets/shaders/TransformVertexShader.vertexshader
 )
 target_link_libraries(MineStrike
 	${ALL_LIBS}
