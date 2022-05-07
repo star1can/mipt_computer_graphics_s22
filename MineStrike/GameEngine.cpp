@@ -60,20 +60,12 @@ glm::vec3 GameEngine::GetRandHorizVec(int min, int max)
 
 void GameEngine::Shoot()
 {
-    active_projectiles.emplace_back(projectile_model, camera.GetPos() + 1.5f * camera.GetDir(), camera.GetDir(), 0.25f);
+    active_projectiles.emplace_back(projectile_model, camera.GetPos() + 1.0f * camera.GetDir(), camera.GetDir(), 0.25f);
 }
 
 void GameEngine::UpdateProjectiles()
 {
 }
-
-void GameEngine::MouseCallback(GLFWwindow *window, int button, int action, int mod)
-{
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-    {
-        // Shoot();
-    }
-};
 
 GameEngine::GameEngine(const Window &window_,
                        const Camera &camera_,
@@ -93,7 +85,6 @@ GameEngine::GameEngine(const Window &window_,
                                               spawn_radius(spawn_radius_),
                                               collide_dist(collide_dist_)
 {
-    glfwSetMouseButtonCallback(window.GetWindow(), MouseCallback);
 
     // Init enemies
     for (size_t i = 0; i < enemies_count; i++)
@@ -142,7 +133,7 @@ void GameEngine::Update()
         }
 
         // Move other projectiles
-        float sensivity = (glfwGetTime() - last_update_time) * 200.0f; // плохо, надо инкапсулировать это в класс снарядов
+        float sensivity = (glfwGetTime() - last_update_time) * 400.0f; // плохо, надо инкапсулировать это в класс снарядов
         active_projectiles[i].SetPos(active_projectiles[i].GetPos() + sensivity * active_projectiles[i].GetDir());
     }
 

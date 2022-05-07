@@ -35,13 +35,10 @@ class GameEngine
 
     // draw models with same VAO
     void DrawArray(std::vector<GameObject> &objects_array);
-    // void DrawArray(std::vector<Projectile> &objects_array);
 
     glm::vec3 GetRandVec(int min_length, int max_length);
 
     glm::vec3 GetRandHorizVec(int min, int max);
-
-    static void MouseCallback(GLFWwindow *window, int button, int action, int mod);
 
     void Shoot();
 
