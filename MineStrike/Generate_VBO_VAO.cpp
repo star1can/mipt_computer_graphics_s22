@@ -99,13 +99,12 @@ GLuint GenerateVAO(
         (void *)0 // array buffer offset
     );
 
-    // А надо ?
-    // glDisableVertexAttribArray(0);
-    // glDisableVertexAttribArray(1);
-    // glDisableVertexAttribArray(2);
-
     // _____________________________________________________________
     glBindVertexArray(0);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
 
     return vertex_acess_object;
 }

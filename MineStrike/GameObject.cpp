@@ -26,9 +26,15 @@ void GameObject::SetDir(glm::vec3 dir_)
 
 glm::mat4 GameObject::GetModelMatrix()
 {
+    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+
     glm::mat4 translate_mat = glm::translate(glm::mat4(), pos);
-    glm::mat4 rotate_mat = glm::rotate(glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 look_at = glm::lookAt(
+        pos,
+        pos + dir,
+        up
+    );
     glm::mat4 scale_mat = glm::scale(glm::mat4(), glm::vec3(scale));
 
-    return translate_mat * scale_mat * rotate_mat;
+    return translate_mat * scale_mat;
 }

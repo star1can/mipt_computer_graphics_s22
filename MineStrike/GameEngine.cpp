@@ -61,7 +61,7 @@ glm::vec3 GameEngine::GetRandHorizVec(int min, int max)
 
 void GameEngine::Shoot()
 {
-    active_projectiles.emplace_back(projectile_model, camera.GetPos() + 1.0f * camera.GetDir(), camera.GetDir(), 0.25f);
+    active_projectiles.emplace_back(projectile_model, camera.GetPos() + 0.5f * camera.GetDir(), camera.GetDir(), 0.25f);
 }
 
 void GameEngine::UpdateProjectiles()
@@ -91,7 +91,7 @@ GameEngine::GameEngine(const Window &window_,
     for (size_t i = 0; i < enemies_count; i++)
     {
         glm::vec3 pos = GetRandHorizVec(0, spawn_radius);
-        glm::vec3 dir = camera.GetPos() - pos;
+        glm::vec3 dir = glm::normalize(camera.GetPos() - pos);
         active_enemies.emplace_back(enemie_model, pos, dir);
     }
 
@@ -115,7 +115,7 @@ void GameEngine::Update()
     // Check mouse for shot
     if (glfwGetMouseButton(window.GetWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
     {
-        if (glfwGetTime() - last_shoot_time > 0.0f)
+        if (glfwGetTime() - last_shoot_time > 0.2f)
         {
             Shoot();
             last_shoot_time = glfwGetTime();
@@ -135,7 +135,7 @@ void GameEngine::Update()
     // UpdateProjectiles
     for (GameObject &projectile : active_projectiles)
     {
-        float sensivity = (glfwGetTime() - last_update_time) * 400.0f; // плохо, надо инкапсулировать это в класс снарядов
+        float sensivity = (glfwGetTime() - last_update_time) * 2000.0f; // плохо, надо инкапсулировать это в класс снарядов
         projectile.SetPos(projectile.GetPos() + sensivity * projectile.GetDir());
     }
 

@@ -28,14 +28,15 @@ void Camera::UpdateFromKeyboard(GLfloat delta_time)
 {
 	GLfloat sensivity = movement_speed * delta_time;
 	glm::vec3 right = glm::normalize(glm::cross(up, dir));
+	glm::vec3 front = glm::normalize(glm::cross(up, right));
 
 	if (glfwGetKey(window.GetWindow(), GLFW_KEY_W) == GLFW_PRESS)
 	{
-		pos += sensivity * dir;
+		pos -= sensivity * front;
 	}
 	if (glfwGetKey(window.GetWindow(), GLFW_KEY_S) == GLFW_PRESS)
 	{
-		pos -= sensivity * dir;
+		pos += sensivity * front;
 	}
 	if (glfwGetKey(window.GetWindow(), GLFW_KEY_A) == GLFW_PRESS)
 	{

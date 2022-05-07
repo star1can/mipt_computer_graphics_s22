@@ -57,7 +57,8 @@ add_definitions(
 
 # hw2_shooter
 add_executable(MineStrike
-		MineStrike/main.cpp
+	
+	MineStrike/shooter.cpp
 	common/shader.cpp
 	common/shader.hpp
 	# common/controls.cpp
@@ -66,8 +67,8 @@ add_executable(MineStrike
 	common/texture.hpp
 	common/objloader.cpp
 	common/objloader.hpp
-	# common/text2D.hpp
-	# common/text2D.cpp
+	common/text2D.hpp
+	common/text2D.cpp
 
 	MineStrike/Camera.cpp
 	MineStrike/Camera.hpp
@@ -85,8 +86,10 @@ add_executable(MineStrike
 	MineStrike/GameObject.hpp
 	MineStrike/GameObject.cpp
 
-		MineStrike/assets/shaders/TextureFragmentShader.fragmentshader
-		MineStrike/assets/shaders/TransformVertexShader.vertexshader
+	MineStrike/assets/shaders/TextureFragmentShader.fragmentshader
+	MineStrike/assets/shaders/TransformVertexShader.vertexshader
+	MineStrike/assets/shaders/TextVertexShader.fragmentshader
+	MineStrike/assets/shaders/TextVertexShader.vertexshader
 )
 target_link_libraries(MineStrike
 	${ALL_LIBS}

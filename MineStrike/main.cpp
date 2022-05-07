@@ -16,8 +16,7 @@
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/objloader.hpp>
-
-
+#include <common/text2D.hpp>
 
 glm::mat4 GetModelMatrix()
 {
@@ -40,7 +39,7 @@ int main()
 
   /// Create window
 
-  Window window("main window", 1200, 800);
+  Window window("main window", 1024, 768);
   window.MakeContextCurrent();
 
   Camera camera(window);
@@ -78,6 +77,8 @@ int main()
                          grass,
                          40,
                          200);
+
+  initText2D("assets/textures/holstein.DDS");
 
   // Enable depth test
   glEnable(GL_DEPTH_TEST);
@@ -118,10 +119,13 @@ int main()
 
     // glBindVertexArray(0);
 
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     game_engine.Update();
+    char text[256];
+    sprintf(text, "%.2f sec", glfwGetTime());
+    std::string count(std::to_string(42));
+    printText2D(count.data(), 10, 500, 100);
 
     // - Check and call events and swap the buffers
     glfwSwapBuffers(window.GetWindow()); // swaps 2 buffers to avoid showing incomplete buffer
