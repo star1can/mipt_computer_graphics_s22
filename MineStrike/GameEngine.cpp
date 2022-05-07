@@ -114,7 +114,7 @@ void GameEngine::Update()
     // Check mouse for shot
     if (glfwGetMouseButton(window.GetWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
     {
-        if (glfwGetTime() - last_shoot_time > 0.5f)
+        if (glfwGetTime() - last_shoot_time > 0.0f)
         {
             Shoot();
             last_shoot_time = glfwGetTime();
@@ -126,15 +126,18 @@ void GameEngine::Update()
     // UpdateProjectiles
     for (int i = 0; i < active_projectiles.size(); ++i)
     {
-        // Delete far projectiles
+
         if (glm::length(active_projectiles[i].GetPos()) > 50.0f)
         {
-            active_projectiles.erase(active_projectiles.begin() + i);   
+            // Delete far projectiles
+            active_projectiles.erase(active_projectiles.begin() + i);
         }
-
-        // Move other projectiles
-        float sensivity = (glfwGetTime() - last_update_time) * 400.0f; // плохо, надо инкапсулировать это в класс снарядов
-        active_projectiles[i].SetPos(active_projectiles[i].GetPos() + sensivity * active_projectiles[i].GetDir());
+        else
+        {
+            // Move other projectiles
+            float sensivity = (glfwGetTime() - last_update_time) * 400.0f; // плохо, надо инкапсулировать это в класс снарядов
+            active_projectiles[i].SetPos(active_projectiles[i].GetPos() + sensivity * active_projectiles[i].GetDir());
+        }
     }
 
     // Update collisions

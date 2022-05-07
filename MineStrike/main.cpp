@@ -58,8 +58,6 @@ int main()
 
   /// Creating objects
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////
-
   Model zombie("assets/models/zombie.obj",
                "assets/textures/zombie.DDS",
                "assets/shaders/TransformVertexShader.vertexshader",
