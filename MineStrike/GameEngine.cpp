@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "GameEngine.hpp"
 #include "GameObject.hpp"
@@ -123,33 +124,44 @@ void GameEngine::Update()
 
     camera.Update();
 
-    // UpdateProjectiles
-    for (int i = 0; i < active_projectiles.size(); ++i)
-    {
+    active_projectiles.erase(
+        std::remove_if(
+            active_projectiles.begin(),
+            active_projectiles.end(),
+            [](GameObject &projectile)
+            { return glm::length(projectile.GetPos()) > 50.0f; }),
+        active_projectiles.end());
 
-        if (glm::length(active_projectiles[i].GetPos()) > 50.0f)
-        {
-            // Delete far projectiles
-            active_projectiles.erase(active_projectiles.begin() + i);
-        }
-        else
-        {
-            // Move other projectiles
-            float sensivity = (glfwGetTime() - last_update_time) * 400.0f; // плохо, надо инкапсулировать это в класс снарядов
-            active_projectiles[i].SetPos(active_projectiles[i].GetPos() + sensivity * active_projectiles[i].GetDir());
-        }
+    // UpdateProjectiles
+    for (GameObject &projectile : active_projectiles)
+    {
+        float sensivity = (glfwGetTime() - last_update_time) * 400.0f; // плохо, надо инкапсулировать это в класс снарядов
+        projectile.SetPos(projectile.GetPos() + sensivity * projectile.GetDir());
     }
 
     // Update collisions
-    for (int projectile_idx = 0; projectile_idx < active_projectiles.size(); ++projectile_idx)
+    for (int projectile_idx = 0; projectile_idx < active_projectiles.size();)
     {
+        bool has_intersection = false;
+
+        // Remove ONE enemie which intersects with projectile
         for (int enemy_idx = 0; enemy_idx < active_enemies.size(); ++enemy_idx)
         {
             if (glm::length(active_projectiles[projectile_idx].GetPos() - active_enemies[enemy_idx].GetPos()) < collide_dist)
             {
-                active_projectiles.erase(active_projectiles.begin() + projectile_idx);
                 active_enemies.erase(active_enemies.begin() + enemy_idx);
+                has_intersection = true;
+                break;
             }
+        }
+
+        if (has_intersection)
+        {
+            active_projectiles.erase(active_projectiles.begin() + projectile_idx);
+        }
+        else
+        {
+            ++projectile_idx;
         }
     }
 
