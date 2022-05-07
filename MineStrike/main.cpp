@@ -17,6 +17,8 @@
 #include <common/texture.hpp>
 #include <common/objloader.hpp>
 
+
+
 glm::mat4 GetModelMatrix()
 {
   // Model transformations
@@ -59,7 +61,7 @@ int main()
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
   Model zombie("assets/models/zombie.obj",
-               "assets/textures/zombie.dds",
+               "assets/textures/zombie.DDS",
                "assets/shaders/TransformVertexShader.vertexshader",
                "assets/shaders/TextureFragmentShader.fragmentshader");
   Model grass("assets/models/cube.obj",
@@ -76,7 +78,8 @@ int main()
                          zombie,
                          fireball,
                          grass,
-                         40);
+                         40,
+                         200);
 
   // Enable depth test
   glEnable(GL_DEPTH_TEST);
@@ -121,24 +124,6 @@ int main()
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     game_engine.Update();
-
-    // glUseProgram(grass.shader_program);
-    // Bind our texture in Texture Unit 0
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, grass.texture); //можно ли перенести это в
-    // glUniform1i(grass.glsl_texture, 0);          // Set our "myTextureSampler" sampler to use Texture Unit 0
-
-    // glm::mat4 mvp_matrix = camera.GetProjectionMatrix(window.GetWidth(), window.GetHeight()) * camera.GetViewMatrix();
-
-    // glUniformMatrix4fv(grass.glsl_mvp_matrix, 1, GL_FALSE, &mvp_matrix[0][0]); // transfer mvp matrix to shader
-
-    // glBindVertexArray(grass.VAO);
-
-    // glDrawArrays(GL_TRIANGLES, 0, grass.triangles_count);
-
-    // glBindVertexArray(0);
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // - Check and call events and swap the buffers
     glfwSwapBuffers(window.GetWindow()); // swaps 2 buffers to avoid showing incomplete buffer

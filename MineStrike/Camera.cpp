@@ -66,9 +66,8 @@ void Camera::UpdateFromMouse(GLfloat delta_time)
 
 	yaw -= (window_center.x - x) * sensitivity;
 	pitch += (window_center.y - y) * sensitivity;
-	
-	
-	if (pitch *  180.0f / pi >= limit_angle)
+
+	if (pitch * 180.0f / pi >= limit_angle)
 	{
 		pitch = pi * limit_angle / 180.0f;
 	}
@@ -95,6 +94,11 @@ void Camera::Update()
 glm::vec3 Camera::GetPos()
 {
 	return pos;
+}
+
+glm::vec3 Camera::GetDir()
+{
+	return dir;
 }
 
 glm::mat4 Camera::GetViewMatrix()

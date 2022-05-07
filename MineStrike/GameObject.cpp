@@ -14,6 +14,16 @@ glm::vec3 GameObject::GetDir()
     return dir;
 }
 
+void GameObject::SetPos(glm::vec3 pos_)
+{
+    pos = pos_;
+}
+
+void GameObject::SetDir(glm::vec3 dir_)
+{
+    dir = dir_;
+}
+
 glm::mat4 GameObject::GetModelMatrix()
 {
     glm::mat4 translate_mat = glm::translate(glm::mat4(), pos);

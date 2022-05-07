@@ -43,6 +43,7 @@ public:
     void Update();
 
     glm::vec3 GetPos();
+    glm::vec3 GetDir();
     glm::mat4 GetViewMatrix();
     glm::mat4 GetProjectionMatrix();
 };

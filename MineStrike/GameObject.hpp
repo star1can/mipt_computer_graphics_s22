@@ -24,7 +24,9 @@ public:
     glm::vec3 GetPos();
 
     glm::vec3 GetDir();
-    
 
+    void SetPos(glm::vec3 pos_);
+    void SetDir(glm::vec3 dir_);
+    
     glm::mat4 GetModelMatrix();
 };
