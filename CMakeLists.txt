@@ -58,7 +58,7 @@ add_definitions(
 # hw2_shooter
 add_executable(MineStrike
 	
-	MineStrike/shooter.cpp
+	MineStrike/main.cpp
 	common/shader.cpp
 	common/shader.hpp
 	# common/controls.cpp
