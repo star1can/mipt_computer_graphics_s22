@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -77,6 +78,9 @@ int main()
                          grass,
                          40,
                          200);
+  GLuint VertexArrayID;
+  glGenVertexArrays(1, &VertexArrayID);
+  glBindVertexArray(VertexArrayID);
 
   initText2D("assets/textures/holstein.DDS");
 
@@ -88,7 +92,7 @@ int main()
   // Cull triangles which normal is not towards the camera
   glEnable(GL_CULL_FACE);
 
-  glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+  glClearColor(0.f, 0.f, 1.0f, 0.0f);
 
   /// Draw loop
 
