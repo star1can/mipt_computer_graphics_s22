@@ -2,7 +2,6 @@
 
 #include <vector>
 
-
 #include "Window.hpp"
 #include "Camera.hpp"
 #include "Model.hpp"
@@ -13,7 +12,7 @@
 class GameEngine
 {
     const float pi = 3.14159265359;
-    
+
     std::vector<GameObject> floor_cells;
     std::vector<GameObject> active_enemies;
     std::vector<GameObject> active_projectiles;
@@ -22,6 +21,7 @@ class GameEngine
     Model projectile_model;
     Model floor_cell_model;
 
+    int enemies_killed = 0;
     int enemies_count;
     int floor_size;
     float spawn_radius;
@@ -34,16 +34,19 @@ class GameEngine
     Window window;
     Camera camera;
 
-    // draw models with same VAO
-    void DrawArray(std::vector<GameObject> &objects_array);
-
     glm::vec3 GetRandVec(int min_length, int max_length);
 
     glm::vec3 GetRandHorizVec(int min, int max);
 
+
+    // draw models with same VAO
+    void DrawArray(std::vector<GameObject> &objects_array);
+
     void Shoot();
 
     void UpdateProjectiles();
+
+    void UpdateCollisions();
 
 public:
     GameEngine(const Window &window_,
@@ -55,6 +58,6 @@ public:
                int enemies_count_ = 20,
                float spawn_radius_ = 20.0,
                float collide_dist = 0.5f);
-    
-    void Update();    
+
+    void Update();
 };
