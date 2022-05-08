@@ -19,128 +19,125 @@
 #include <common/objloader.hpp>
 #include <common/text2D.hpp>
 
-glm::mat4 GetModelMatrix()
-{
-  // Model transformations
-  glm::mat4 translate = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f));
-  glm::mat4 rotate = glm::rotate(glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-  glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(1.0f));
+glm::mat4 GetModelMatrix() {
+    // Model transformations
+    glm::mat4 translate = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 rotate = glm::rotate(glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(1.0f));
 
-  return glm::mat4(1.0f);
+    return glm::mat4(1.0f);
 }
 
-int main()
-{
-  /// Init GLFW
-  if (!glfwInit())
-  {
-    std::cout << "glfwInit() Error";
-    return 1;
-  }
+int main() {
+    /// Init GLFW
+    if (!glfwInit()) {
+        std::cout << "glfwInit() Error";
+        return 1;
+    }
 
-  /// Create window
+    /// Create window
 
-  Window window("main window", 1024, 768);
-  window.MakeContextCurrent();
+    Window window("main window", 1024, 768);
+    window.MakeContextCurrent();
 
-  Camera camera(window);
+    Camera camera(window);
 
-  // Вот тут (или ещё где-то, может в отдельном файле) создай модель куба и шара
+    // Вот тут (или ещё где-то, может в отдельном файле) создай модель куба и шара
 
-  /// Init GLEW
-  glewExperimental = true; // Needed for core profile
-  if (glewInit() != GLEW_OK)
-  {
-    std::cout << "glewInit() Error";
-    glfwTerminate();
-    return 1;
-  }
+    /// Init GLEW
+    glewExperimental = true; // Needed for core profile
+    if (glewInit() != GLEW_OK) {
+        std::cout << "glewInit() Error";
+        glfwTerminate();
+        return 1;
+    }
 
-  /// Creating objects
+    glClearColor(0.f, 0.f, 1.0f, 0.0f);
 
-  Model zombie("assets/models/zombie.obj",
-               "assets/textures/zombie.DDS",
-               "assets/shaders/TransformVertexShader.vertexshader",
-               "assets/shaders/TextureFragmentShader.fragmentshader");
-  Model grass("assets/models/cube.obj",
-              "assets/textures/grass.DDS",
-              "assets/shaders/TransformVertexShader.vertexshader",
-              "assets/shaders/TextureFragmentShader.fragmentshader");
-  Model fireball("assets/models/fireball.obj",
-                 "assets/textures/fireball.DDS",
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    // Accept fragment if it closer to the camera than the former one
+    glDepthFunc(GL_LESS);
+
+    // Cull triangles which normal is not towards the camera
+    glEnable(GL_CULL_FACE);
+
+    /// Creating objects
+
+    Model zombie("assets/models/zombie.obj",
+                 "assets/textures/zombie.DDS",
                  "assets/shaders/TransformVertexShader.vertexshader",
                  "assets/shaders/TextureFragmentShader.fragmentshader");
+    Model grass("assets/models/cube.obj",
+                "assets/textures/grass.DDS",
+                "assets/shaders/TransformVertexShader.vertexshader",
+                "assets/shaders/TextureFragmentShader.fragmentshader");
+    Model fireball("assets/models/fireball.obj",
+                   "assets/textures/fireball.DDS",
+                   "assets/shaders/TransformVertexShader.vertexshader",
+                   "assets/shaders/TextureFragmentShader.fragmentshader");
 
-  GameEngine game_engine(window,
-                         camera,
-                         zombie,
-                         fireball,
-                         grass,
-                         40,
-                         200);
-  GLuint VertexArrayID;
-  glGenVertexArrays(1, &VertexArrayID);
-  glBindVertexArray(VertexArrayID);
+    GameEngine game_engine(window,
+                           camera,
+                           zombie,
+                           fireball,
+                           grass,
+                           40,
+                           200);
 
-  initText2D("assets/textures/holstein.DDS");
 
-  // Enable depth test
-  glEnable(GL_DEPTH_TEST);
-  // Accept fragment if it closer to the camera than the former one
-  glDepthFunc(GL_LESS);
+    initText2D("assets/textures/holstein.DDS");
 
-  // Cull triangles which normal is not towards the camera
-  glEnable(GL_CULL_FACE);
+    /// Draw loop
 
-  glClearColor(0.f, 0.f, 1.0f, 0.0f);
+    // - Loop until the ESC key was pressed or the red cross was not pressed
+    while (/*ESC button*/ glfwGetKey(window.GetWindow(), GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+                          /*red cross*/ !glfwWindowShouldClose(window.GetWindow())) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear buffer to suppress flickering
 
-  /// Draw loop
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // - Loop until the ESC key was pressed or the red cross was not pressed
-  while (/*ESC button*/ glfwGetKey(window.GetWindow(), GLFW_KEY_ESCAPE) != GLFW_PRESS && /*red cross*/ !glfwWindowShouldClose(window.GetWindow()))
-  {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear buffer to suppress flickering
+        // glBindVertexArray(zombie.VAO);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // glUseProgram(zombie.shader_program);
 
-    // glBindVertexArray(zombie.VAO);
+        // // Bind our texture in Texture Unit 0
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, zombie.texture); //можно ли перенести это в
+        // glUniform1i(zombie.glsl_texture, 0);          // Set our "myTextureSampler" sampler to use Texture Unit 0
 
-    // glUseProgram(zombie.shader_program);
+        // for (size_t i = 0; i < 360; i += 45)
+        // {
 
-    // // Bind our texture in Texture Unit 0
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, zombie.texture); //можно ли перенести это в
-    // glUniform1i(zombie.glsl_texture, 0);          // Set our "myTextureSampler" sampler to use Texture Unit 0
+        //   glm::mat4 mvp_matrix = camera.GetProjectionMatrix() * camera.GetViewMatrix() * glm::rotate(glm::radians(float(i)), glm::vec3(0.0f, 0.0f, 1.0f));
+        //   glUniformMatrix4fv(zombie.glsl_mvp_matrix, 1, GL_FALSE, &mvp_matrix[0][0]); // transfer mvp matrix to shader
 
-    // for (size_t i = 0; i < 360; i += 45)
-    // {
+        //   glDrawArrays(GL_TRIANGLES, 0, zombie.triangles_count);
+        // }
 
-    //   glm::mat4 mvp_matrix = camera.GetProjectionMatrix() * camera.GetViewMatrix() * glm::rotate(glm::radians(float(i)), glm::vec3(0.0f, 0.0f, 1.0f));
-    //   glUniformMatrix4fv(zombie.glsl_mvp_matrix, 1, GL_FALSE, &mvp_matrix[0][0]); // transfer mvp matrix to shader
+        // glBindVertexArray(0);
 
-    //   glDrawArrays(GL_TRIANGLES, 0, zombie.triangles_count);
-    // }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // glBindVertexArray(0);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    game_engine.Update();
-    char text[256];
-    sprintf(text, "%.2f sec", glfwGetTime());
-    std::string count(std::to_string(42));
-    printText2D(count.data(), 10, 500, 100);
+        game_engine.Update();
 
-    // - Check and call events and swap the buffers
-    glfwSwapBuffers(window.GetWindow()); // swaps 2 buffers to avoid showing incomplete buffer
-    glfwPollEvents();                    // checks for key pressing or mouse control
-  }
+        char text[256];
+        sprintf(text, "%.2f sec", glfwGetTime());
+        std::string count(std::to_string(42));
+        printText2D(count.data(), 10, 500, 100);
 
-  // Delete everything
-  // glDeleteBuffers(1, &cube.VBO);
-  // glDeleteVertexArrays(1, &cube.VAO);
-  // glDeleteProgram(cube.shader_program);
-  glfwTerminate();
+        // - Check and call events and swap the buffers
+        glfwSwapBuffers(window.GetWindow()); // swaps 2 buffers to avoid showing incomplete buffer
+        glfwPollEvents();                    // checks for key pressing or mouse control
+    }
 
-  return 0;
+    // Delete everything
+    // glDeleteBuffers(1, &cube.VBO);
+    // glDeleteVertexArrays(1, &cube.VAO);
+    // glDeleteProgram(cube.shader_program);
+    glfwTerminate();
+
+    return 0;
 }

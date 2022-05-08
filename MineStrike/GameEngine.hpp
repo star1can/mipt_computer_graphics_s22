@@ -26,6 +26,7 @@ class GameEngine
     int floor_size;
     float spawn_radius;
     float collide_dist;
+    GLuint vertex_array_id;
 
     double last_shoot_time;
     double last_update_time;
