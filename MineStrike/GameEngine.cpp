@@ -1,13 +1,7 @@
-#include <iostream>
 #include <algorithm>
+#include <string>
 
 #include "GameEngine.hpp"
-#include "GameObject.hpp"
-#include "Model.hpp"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 
 #include <common/text2D.hpp>
 
@@ -130,7 +124,7 @@ void GameEngine::UpdateProjectiles()
     for (GameObject &projectile : active_projectiles)
     {
         float sensivity =
-            (glfwGetTime() - last_update_time) * 2000.0f; // плохо, надо инкапсулировать это в класс снарядов
+            (glfwGetTime() - last_update_time) * 1500.0f; // плохо, надо инкапсулировать это в класс снарядов
         projectile.SetPos(projectile.GetPos() + sensivity * projectile.GetDir());
     }
 }
@@ -182,6 +176,14 @@ void GameEngine::Update()
 
     UpdateProjectiles();
     UpdateCollisions();
+
+    if ((int)glfwGetTime() % 1000 == 10) {
+        for (size_t i = 0; i < 1; i++) {
+            glm::vec3 pos = GetRandHorizVec(0, spawn_radius);
+            glm::vec3 dir = glm::normalize(camera.GetPos() - pos);
+            active_enemies.emplace_back(enemie_model, pos, dir);
+        }
+    }
 
     glBindVertexArray(1);
     DrawArray(floor_cells);

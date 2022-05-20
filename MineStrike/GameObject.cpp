@@ -26,7 +26,7 @@ void GameObject::SetDir(glm::vec3 dir_)
 
 glm::mat4 GameObject::GetModelMatrix()
 {
-    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 up = glm::vec3(1.0f, 1.0f, 0.0f);
 
     glm::mat4 translate_mat = glm::translate(glm::mat4(), pos);
     glm::mat4 look_at = glm::lookAt(
