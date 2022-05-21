@@ -118,7 +118,7 @@ glm::mat4 Camera::GetProjectionMatrix()
 		glm::radians(fov),									  // FOV (field of view)
 		float(window.GetWidth()) / float(window.GetHeight()), // ratio of rectangle; determines camera's frustum longitudinal shape
 		0.1f,												  // determines distance to the near face of camera's frustum
-		100.0f												  // determines distance to the far side of camera's frustum
+		1000.0f												  // determines distance to the far side of camera's frustum
 	);
 
 	return projection_matrix;

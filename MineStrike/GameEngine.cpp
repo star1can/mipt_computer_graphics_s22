@@ -53,7 +53,7 @@ GameEngine::GameEngine(const Window &window_,
     // Init sky
     glm::vec3 pos = glm::vec3(0.0, 2.0f, 0.f);
     glm::vec3 dir = glm::vec3(0.0f, 1.0f, 0.0f);
-    sky_.emplace_back(sky_model_, pos, dir, 30.f);
+    sky_.emplace_back(sky_model_, pos, dir, 70.f);
 
     last_shoot_time = glfwGetTime();
     last_update_time = glfwGetTime();
