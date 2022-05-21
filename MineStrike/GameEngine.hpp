@@ -16,16 +16,19 @@ class GameEngine
     std::vector<GameObject> floor_cells;
     std::vector<GameObject> active_enemies;
     std::vector<GameObject> active_projectiles;
+    std::vector<GameObject> sky_;
 
     Model enemie_model;
     Model projectile_model;
     Model floor_cell_model;
+    Model sky_model_;
 
     int enemies_killed = 0;
     int enemies_count;
     int floor_size;
     float spawn_radius;
     float collide_dist;
+    float speed_ = 2048.0f;
     GLuint vertex_array_id;
 
     double last_shoot_time;
@@ -54,6 +57,7 @@ public:
                const Model &enemie_model_,
                const Model &projectile_model_,
                const Model &floor_cell_model_,
+               const Model &sky_model,
                int floor_size_ = 10,
                int enemies_count_ = 20,
                float spawn_radius_ = 20.0,

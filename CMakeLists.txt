@@ -32,6 +32,7 @@ endif(INCLUDE_DISTRIB)
 
 
 include_directories(
+		external/stb/
 	external/AntTweakBar-1.16/include/
 	external/glfw-3.1.2/include/
 	external/glm-0.9.7.1/
@@ -85,12 +86,15 @@ add_executable(MineStrike
 	MineStrike/GameEngine.cpp
 	MineStrike/GameObject.hpp
 	MineStrike/GameObject.cpp
+	MineStrike/stb.cpp
+	MineStrike/shaderClass.h
+	MineStrike/shaderClass.cpp
 
 	MineStrike/assets/shaders/TextureFragmentShader.fragmentshader
 	MineStrike/assets/shaders/TransformVertexShader.vertexshader
 #	MineStrike/assets/shaders/TextVertexShader.fragmentshader
 #	MineStrike/assets/shaders/TextVertexShader.vertexshader
-)
+		MineStrike/stb.cpp)
 target_link_libraries(MineStrike
 	${ALL_LIBS}
 )

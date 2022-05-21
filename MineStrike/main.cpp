@@ -54,7 +54,10 @@ int main()
     glDepthFunc(GL_LESS);
 
     // Cull triangles which normal is not towards the camera
-    glEnable(GL_CULL_FACE);
+//    // Enables Cull Facing
+//    glEnable(GL_CULL_FACE);
+//    // Keeps front faces
+
 
     /// Creating objects
 
@@ -63,11 +66,15 @@ int main()
                  "assets/shaders/TransformVertexShader.vertexshader",
                  "assets/shaders/TextureFragmentShader.fragmentshader");
     Model grass("assets/models/cube.obj",
-                "assets/textures/grass.DDS",
+                "assets/textures/grass_hd.DDS",
                 "assets/shaders/TransformVertexShader.vertexshader",
                 "assets/shaders/TextureFragmentShader.fragmentshader");
     Model fireball("assets/models/fireball.obj",
-                   "assets/textures/fireball.DDS",
+                   "assets/textures/fireball1.DDS",
+                   "assets/shaders/TransformVertexShader.vertexshader",
+                   "assets/shaders/TextureFragmentShader.fragmentshader");
+    Model sky("assets/models/sky.obj",
+                   "assets/textures/sky16.DDS",
                    "assets/shaders/TransformVertexShader.vertexshader",
                    "assets/shaders/TextureFragmentShader.fragmentshader");
 
@@ -76,8 +83,9 @@ int main()
                            zombie,
                            fireball,
                            grass,
-                           40,
-                           200);
+                           sky,
+                           45,
+                           100);
     /// Draw loop
 
     // - Loop until the ESC key was pressed or the red cross was not pressed

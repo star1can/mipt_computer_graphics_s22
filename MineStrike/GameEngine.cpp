@@ -4,12 +4,14 @@
 #include "GameEngine.hpp"
 
 #include <common/text2D.hpp>
+#include <external/stb/stb_image.h>
 
 GameEngine::GameEngine(const Window &window_,
                        const Camera &camera_,
                        const Model &enemie_model_,
                        const Model &projectile_model_,
                        const Model &floor_cell_model_,
+                       const Model &sky_model,
                        int floor_size_,
                        int enemies_count_,
                        float spawn_radius_,
@@ -18,6 +20,7 @@ GameEngine::GameEngine(const Window &window_,
                                               enemie_model(enemie_model_),
                                               projectile_model(projectile_model_),
                                               floor_cell_model(floor_cell_model_),
+                                              sky_model_(sky_model),
                                               floor_size(floor_size_),
                                               enemies_count(enemies_count_),
                                               spawn_radius(spawn_radius_),
@@ -46,6 +49,11 @@ GameEngine::GameEngine(const Window &window_,
             floor_cells.emplace_back(floor_cell_model, pos, dir, 0.5f);
         }
     }
+
+    // Init sky
+    glm::vec3 pos = glm::vec3(0.0, 2.0f, 0.f);
+    glm::vec3 dir = glm::vec3(0.0f, 1.0f, 0.0f);
+    sky_.emplace_back(sky_model_, pos, dir, 30.f);
 
     last_shoot_time = glfwGetTime();
     last_update_time = glfwGetTime();
@@ -124,7 +132,7 @@ void GameEngine::UpdateProjectiles()
     for (GameObject &projectile : active_projectiles)
     {
         float sensivity =
-            (glfwGetTime() - last_update_time) * 1500.0f; // плохо, надо инкапсулировать это в класс снарядов
+            (glfwGetTime() - last_update_time) * speed_;
         projectile.SetPos(projectile.GetPos() + sensivity * projectile.GetDir());
     }
 }
@@ -162,6 +170,14 @@ void GameEngine::UpdateCollisions()
 
 void GameEngine::Update()
 {
+    if (glfwGetKey(window.GetWindow(), GLFW_KEY_Q) == GLFW_PRESS)
+    {
+        speed_ *= 2;
+    }
+    else if (glfwGetKey(window.GetWindow(), GLFW_KEY_E) == GLFW_PRESS) {
+        speed_ = std::fmax(1.f, speed_ /2);
+    }
+
     // Check mouse for shoot
     if (glfwGetMouseButton(window.GetWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
     {
@@ -187,6 +203,7 @@ void GameEngine::Update()
 
     glBindVertexArray(1);
     DrawArray(floor_cells);
+    DrawArray(sky_);
     DrawArray(active_enemies);
     DrawArray(active_projectiles);
 
