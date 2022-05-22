@@ -123,3 +123,19 @@ glm::mat4 Camera::GetProjectionMatrix()
 
 	return projection_matrix;
 }
+
+float Camera::GetMovementSpeed() {
+    return  movement_speed;
+}
+
+float Camera::GetMouseSpeed() {
+    return mouse_speed;
+}
+
+void Camera::SetMovementSpeed(float new_speed) {
+    movement_speed = new_speed;
+}
+
+void Camera::SetMouseSpeed(float new_speed) {
+    mouse_speed = new_speed;
+}

@@ -46,4 +46,8 @@ public:
     glm::vec3 GetDir();
     glm::mat4 GetViewMatrix();
     glm::mat4 GetProjectionMatrix();
+    float GetMovementSpeed();
+    float GetMouseSpeed();
+    void SetMovementSpeed(float new_speed);
+    void SetMouseSpeed(float new_speed);
 };

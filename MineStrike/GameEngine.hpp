@@ -8,6 +8,7 @@
 // #include "Enemy.hpp"
 #include "Projectile.hpp"
 #include "GameObject.hpp"
+#include "Fireball.hpp"
 
 class GameEngine
 {
@@ -15,7 +16,7 @@ class GameEngine
 
     std::vector<GameObject> floor_cells;
     std::vector<GameObject> active_enemies;
-    std::vector<GameObject> active_projectiles;
+    std::vector<Fireball> active_projectiles;
     std::vector<GameObject> sky_;
 
     Model enemie_model;
@@ -50,6 +51,8 @@ class GameEngine
 
     void UpdateCollisions();
 
+    void DrawFireballs(std::vector<Fireball> &fireballs);
+
 public:
     GameEngine(const Window &window_,
                const Camera &camera_,
@@ -62,4 +65,5 @@ public:
                float collide_dist = 0.5f);
 
     void Update();
+    Camera& GetCamera();
 };

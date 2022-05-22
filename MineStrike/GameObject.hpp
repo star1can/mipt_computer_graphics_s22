@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <utility>
 
 #include "Model.hpp"
 
@@ -17,7 +18,7 @@ protected:
     float scale;
 
 public:
-    GameObject(const Model &model_, glm::vec3 pos_, glm::vec3 dir_, float scale_ = 1.0f) : model(model_), pos(pos_), dir(dir_), scale(scale_) {}
+    GameObject(Model model_, glm::vec3 pos_, glm::vec3 dir_, float scale_ = 1.0f) : model(std::move(model_)), pos(pos_), dir(dir_), scale(scale_) {}
 
     Model GetModel();
     

@@ -62,8 +62,6 @@ add_executable(MineStrike
 	MineStrike/main.cpp
 	common/shader.cpp
 	common/shader.hpp
-	# common/controls.cpp
-	# common/controls.hpp
 	common/texture.cpp
 	common/texture.hpp
 	common/objloader.cpp
@@ -86,15 +84,9 @@ add_executable(MineStrike
 	MineStrike/GameEngine.cpp
 	MineStrike/GameObject.hpp
 	MineStrike/GameObject.cpp
-	MineStrike/stb.cpp
-	MineStrike/shaderClass.h
-	MineStrike/shaderClass.cpp
 
 	MineStrike/assets/shaders/TextureFragmentShader.fragmentshader
-	MineStrike/assets/shaders/TransformVertexShader.vertexshader
-#	MineStrike/assets/shaders/TextVertexShader.fragmentshader
-#	MineStrike/assets/shaders/TextVertexShader.vertexshader
-		MineStrike/stb.cpp)
+	MineStrike/assets/shaders/TransformVertexShader.vertexshader MineStrike/Fireball.cpp MineStrike/Fireball.hpp)
 target_link_libraries(MineStrike
 	${ALL_LIBS}
 )

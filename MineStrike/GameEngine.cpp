@@ -6,27 +6,40 @@
 
 #include <common/text2D.hpp>
 
-
+// VERY BAD!
 const size_t MAX_DETALIZATION_LVL = 4;
-float SPEED = 2048.0f;
+float SPEED = 1024.0f;
 size_t CURR_DETALIZATION_LVL = 4;
+float PARTICLE_SPEED = 1.f;
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    auto* game_engine = static_cast<GameEngine *>(glfwGetWindowUserPointer(window));
+
+    Camera& camera = game_engine->GetCamera();
+
+    float curr_mov_speed = camera.GetMovementSpeed();
+    float curr_mouse_speed = camera.GetMouseSpeed();
 
     if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
-        SPEED *= 2;
-        std::cout<<SPEED<<std::endl;
+        SPEED *= 1.25f;
+        camera.SetMovementSpeed(curr_mov_speed * 1.25f);
+        camera.SetMouseSpeed(curr_mouse_speed * 1.25f);
+        PARTICLE_SPEED *= 1.15;
     } else if (key == GLFW_KEY_E && action == GLFW_PRESS) {
-        SPEED = std::fmax(1.f, SPEED / 2);
-        std::cout<<SPEED<<std::endl;
+        SPEED = std::fmax(10.f, SPEED * 0.75f);
+        camera.SetMovementSpeed(curr_mov_speed * 0.75f);
+        camera.SetMouseSpeed(curr_mouse_speed * 0.75f);
+        PARTICLE_SPEED = std::fmax(0.0005f, PARTICLE_SPEED * 0.75f);
     } else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
         CURR_DETALIZATION_LVL = std::min(CURR_DETALIZATION_LVL + 1, MAX_DETALIZATION_LVL);
-        std::cout<<CURR_DETALIZATION_LVL<<std::endl;
     } else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
         CURR_DETALIZATION_LVL = CURR_DETALIZATION_LVL != 0 ? CURR_DETALIZATION_LVL - 1 : 0;
-        std::cout<<CURR_DETALIZATION_LVL<<std::endl;
     }
+}
+
+Camera& GameEngine::GetCamera() {
+    return camera;
 }
 
 GameEngine::GameEngine(const Window &window_,
@@ -84,7 +97,6 @@ GameEngine::GameEngine(const Window &window_,
 
     last_shoot_time = glfwGetTime();
     last_update_time = glfwGetTime();
-    glfwSetKeyCallback(window.GetWindow(), key_callback);
 }
 
 void GameEngine::DrawArray(std::vector<GameObject> &objects_array) {
@@ -113,6 +125,27 @@ void GameEngine::DrawArray(std::vector<GameObject> &objects_array) {
     glBindVertexArray(vertex_array_id);
 }
 
+void GameEngine::DrawFireballs(std::vector<Fireball> &fireballs_array) {
+    for (Fireball &fireball: fireballs_array) {
+        Model reference_model = fireball.GetModel();
+
+        glBindVertexArray(reference_model.VAO);
+
+        glUseProgram(reference_model.shader_program);
+
+        // Bind our texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, reference_model.texture);
+        glUniform1i(reference_model.glsl_texture, 0);
+        glm::mat4 mvp_matrix = camera.GetProjectionMatrix() * camera.GetViewMatrix() * fireball.GetModelMatrix();
+        // Set our "myTextureSampler" sampler to use Texture Unit 0
+        glUniformMatrix4fv(reference_model.glsl_mvp_matrix, 1, GL_FALSE,
+                           &mvp_matrix[0][0]); // transfer mvp matrix to shader
+        glDrawArrays(GL_TRIANGLES, 0, reference_model.triangles_count);
+    }
+
+    glBindVertexArray(vertex_array_id);
+}
 
 glm::vec3 GameEngine::GetRandVec(int min, int max) {
     double phi = 2 * pi * rand() / RAND_MAX;
@@ -135,7 +168,6 @@ glm::vec3 GameEngine::GetRandHorizVec(int min, int max) {
 }
 
 void GameEngine::Shoot() {
-    std::cout<<CURR_DETALIZATION_LVL<<std::endl;
     active_projectiles.emplace_back(projectile_models[CURR_DETALIZATION_LVL], camera.GetPos() + 0.5f * camera.GetDir(),
                                     camera.GetDir(), 0.25f);
 }
@@ -150,39 +182,37 @@ void GameEngine::UpdateProjectiles() {
             active_projectiles.end());
 
     // UpdateProjectiles
-    for (GameObject &projectile: active_projectiles) {
-        float sensivity =
-                (glfwGetTime() - last_update_time) * SPEED;
-        projectile.SetPos(projectile.GetPos() + sensivity * projectile.GetDir());
+    for (auto &projectile: active_projectiles) {
+        if (projectile.IsBlowed()) {
+            projectile.BlowingUp(PARTICLE_SPEED);
+        }
+        else {
+            float sensivity =
+                    (glfwGetTime() - last_update_time) * SPEED;
+            projectile.SetPos(projectile.GetPos() + sensivity * projectile.GetDir());
+        }
     }
 }
 
 void GameEngine::UpdateCollisions() {
     // Update collisions
-    for (int projectile_idx = 0; projectile_idx < active_projectiles.size();) {
-        bool has_intersection = false;
-
-        // Remove ONE enemie which intersects with projectile
+    for (auto & active_projectile : active_projectiles) {
         for (int enemy_idx = 0; enemy_idx < active_enemies.size(); ++enemy_idx) {
-            if (glm::length(active_projectiles[projectile_idx].GetPos() - active_enemies[enemy_idx].GetPos()) <
-                collide_dist) {
+            if ((glm::length(active_projectile.GetPos() - active_enemies[enemy_idx].GetPos()) <
+                collide_dist) && !active_projectile.IsBlowed()){
+                active_projectile.BlowUp();
                 active_enemies.erase(active_enemies.begin() + enemy_idx);
                 ++enemies_killed;
-                has_intersection = true;
                 break;
             }
-        }
-
-        if (has_intersection) {
-            active_projectiles.erase(active_projectiles.begin() + projectile_idx);
-        } else {
-            ++projectile_idx;
         }
     }
 }
 
 
 void GameEngine::Update() {
+    glfwSetWindowUserPointer(window.GetWindow(), this);
+    glfwSetKeyCallback(window.GetWindow(), KeyCallback);
 
     // Check mouse for shoot
     if (glfwGetMouseButton(window.GetWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
@@ -197,19 +227,19 @@ void GameEngine::Update() {
     UpdateProjectiles();
     UpdateCollisions();
 
-    if ((int) glfwGetTime() % 1000 == 10) {
-        for (size_t i = 0; i < 1; i++) {
-            glm::vec3 pos = GetRandHorizVec(0, spawn_radius);
-            glm::vec3 dir = glm::normalize(camera.GetPos() - pos);
-            active_enemies.emplace_back(enemie_model, pos, dir);
-        }
-    }
+//    if ((int) glfwGetTime() % 1000 == 10) {
+//        for (size_t i = 0; i < 1; i++) {
+//            glm::vec3 pos = GetRandHorizVec(0, spawn_radius);
+//            glm::vec3 dir = glm::normalize(camera.GetPos() - pos);
+//            active_enemies.emplace_back(enemie_model, pos, dir);
+//        }
+//    }
 
     glBindVertexArray(1);
     DrawArray(floor_cells);
     DrawArray(sky_);
     DrawArray(active_enemies);
-    DrawArray(active_projectiles);
+    DrawFireballs(active_projectiles);
 
     std::string prefix("Score:");
     std::string count(std::to_string(enemies_killed));

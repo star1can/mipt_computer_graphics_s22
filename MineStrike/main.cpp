@@ -1,14 +1,10 @@
 #include <iostream>
-#include <vector>
-#include <string>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
-// #include "Generate_VBO_VAO.hpp"
+
 #include "Window.hpp"
 #include "Camera.hpp"
 #include "Model.hpp"
@@ -49,11 +45,6 @@ int main()
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
 
-    // Cull triangles which normal is not towards the camera
-//    // Enables Cull Facing
-//    glEnable(GL_CULL_FACE);
-//    // Keeps front faces
-
 
     /// Creating objects
 
@@ -78,7 +69,6 @@ int main()
                            45,
                            100);
 
-    glfwSetInputMode(window.GetWindow(), GLFW_STICKY_KEYS, GL_TRUE);
     /// Draw loop
 
     // - Loop until the ESC key was pressed or the red cross was not pressed
