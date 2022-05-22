@@ -182,7 +182,7 @@ void GameEngine::UpdateProjectiles() {
                             return glm::length(projectile.GetPos()) > 50.0f;
                         }
                         else {
-                            return glm::length(projectile.GetModel().GetVertices()[0]) > 10.0f;
+                            return glm::length(projectile.GetModel().GetVertices()[0]) > 5.0f;
                         }
                     }
             ),
