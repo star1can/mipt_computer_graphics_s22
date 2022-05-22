@@ -19,7 +19,7 @@ class GameEngine
     std::vector<GameObject> sky_;
 
     Model enemie_model;
-    Model projectile_model;
+    std::vector<Model> projectile_models;
     Model floor_cell_model;
     Model sky_model_;
 
@@ -28,7 +28,6 @@ class GameEngine
     int floor_size;
     float spawn_radius;
     float collide_dist;
-    float speed_ = 2048.0f;
     GLuint vertex_array_id;
 
     double last_shoot_time;
@@ -55,7 +54,6 @@ public:
     GameEngine(const Window &window_,
                const Camera &camera_,
                const Model &enemie_model_,
-               const Model &projectile_model_,
                const Model &floor_cell_model_,
                const Model &sky_model,
                int floor_size_ = 10,

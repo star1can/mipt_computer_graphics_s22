@@ -14,10 +14,6 @@
 #include "Model.hpp"
 #include "GameEngine.hpp"
 
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/objloader.hpp>
-#include <common/text2D.hpp>
 
 int main()
 {
@@ -69,10 +65,6 @@ int main()
                 "assets/textures/grass_hd.DDS",
                 "assets/shaders/TransformVertexShader.vertexshader",
                 "assets/shaders/TextureFragmentShader.fragmentshader");
-    Model fireball("assets/models/fireball.obj",
-                   "assets/textures/fireball1.DDS",
-                   "assets/shaders/TransformVertexShader.vertexshader",
-                   "assets/shaders/TextureFragmentShader.fragmentshader");
     Model sky("assets/models/sky.obj",
                    "assets/textures/sky16.DDS",
                    "assets/shaders/TransformVertexShader.vertexshader",
@@ -81,11 +73,12 @@ int main()
     GameEngine game_engine(window,
                            camera,
                            zombie,
-                           fireball,
                            grass,
                            sky,
                            45,
                            100);
+
+    glfwSetInputMode(window.GetWindow(), GLFW_STICKY_KEYS, GL_TRUE);
     /// Draw loop
 
     // - Loop until the ESC key was pressed or the red cross was not pressed
