@@ -10,23 +10,22 @@
 const size_t MAX_DETALIZATION_LVL = 4;
 float SPEED = 1024.0f;
 size_t CURR_DETALIZATION_LVL = 4;
-float PARTICLE_SPEED = 1.f;
+float PARTICLE_SPEED = 0.8f;
 
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    auto* game_engine = static_cast<GameEngine *>(glfwGetWindowUserPointer(window));
+void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    auto *game_engine = static_cast<GameEngine *>(glfwGetWindowUserPointer(window));
 
-    Camera& camera = game_engine->GetCamera();
+    Camera &camera = game_engine->GetCamera();
 
     float curr_mov_speed = camera.GetMovementSpeed();
     float curr_mouse_speed = camera.GetMouseSpeed();
 
-    if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
+    if (key == GLFW_KEY_E && action == GLFW_PRESS) {
         SPEED *= 1.25f;
         camera.SetMovementSpeed(curr_mov_speed * 1.25f);
         camera.SetMouseSpeed(curr_mouse_speed * 1.25f);
         PARTICLE_SPEED *= 1.15;
-    } else if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+    } else if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
         SPEED = std::fmax(10.f, SPEED * 0.75f);
         camera.SetMovementSpeed(curr_mov_speed * 0.75f);
         camera.SetMouseSpeed(curr_mouse_speed * 0.75f);
@@ -38,7 +37,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
 }
 
-Camera& GameEngine::GetCamera() {
+Camera &GameEngine::GetCamera() {
     return camera;
 }
 
@@ -178,15 +177,22 @@ void GameEngine::UpdateProjectiles() {
             std::remove_if(
                     active_projectiles.begin(),
                     active_projectiles.end(),
-                    [](GameObject &projectile) { return glm::length(projectile.GetPos()) > 50.0f; }),
+                    [](Fireball &projectile) {
+                        if (!projectile.IsBlowed()) {
+                            return glm::length(projectile.GetPos()) > 50.0f;
+                        }
+                        else {
+                            return glm::length(projectile.GetModel().GetVertices()[0]) > 10.0f;
+                        }
+                    }
+            ),
             active_projectiles.end());
 
     // UpdateProjectiles
     for (auto &projectile: active_projectiles) {
         if (projectile.IsBlowed()) {
             projectile.BlowingUp(PARTICLE_SPEED);
-        }
-        else {
+        } else {
             float sensivity =
                     (glfwGetTime() - last_update_time) * SPEED;
             projectile.SetPos(projectile.GetPos() + sensivity * projectile.GetDir());
@@ -196,10 +202,10 @@ void GameEngine::UpdateProjectiles() {
 
 void GameEngine::UpdateCollisions() {
     // Update collisions
-    for (auto & active_projectile : active_projectiles) {
+    for (auto &active_projectile: active_projectiles) {
         for (int enemy_idx = 0; enemy_idx < active_enemies.size(); ++enemy_idx) {
             if ((glm::length(active_projectile.GetPos() - active_enemies[enemy_idx].GetPos()) <
-                collide_dist) && !active_projectile.IsBlowed()){
+                 collide_dist) && !active_projectile.IsBlowed()) {
                 active_projectile.BlowUp();
                 active_enemies.erase(active_enemies.begin() + enemy_idx);
                 ++enemies_killed;
@@ -227,13 +233,13 @@ void GameEngine::Update() {
     UpdateProjectiles();
     UpdateCollisions();
 
-//    if ((int) glfwGetTime() % 1000 == 10) {
-//        for (size_t i = 0; i < 1; i++) {
-//            glm::vec3 pos = GetRandHorizVec(0, spawn_radius);
-//            glm::vec3 dir = glm::normalize(camera.GetPos() - pos);
-//            active_enemies.emplace_back(enemie_model, pos, dir);
-//        }
-//    }
+    if ((int) glfwGetTime() % 1000 == 100) {
+        for (size_t i = 0; i < 1; i++) {
+            glm::vec3 pos = GetRandHorizVec(0, spawn_radius);
+            glm::vec3 dir = glm::normalize(camera.GetPos() - pos);
+            active_enemies.emplace_back(enemie_model, pos, dir);
+        }
+    }
 
     glBindVertexArray(1);
     DrawArray(floor_cells);
