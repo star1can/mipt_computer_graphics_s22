@@ -31,7 +31,7 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods
         camera.SetMouseSpeed(curr_mouse_speed * 0.75f);
         PARTICLE_SPEED = std::fmax(0.0005f, PARTICLE_SPEED * 0.75f);
     } else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
-        CURR_DETALIZATION_LVL = std::min(CURR_DETALIZATION_LVL + 1, MAX_DETALIZATION_LVL);
+        CURR_DETALIZATION_LVL = CURR_DETALIZATION_LVL < 4? CURR_DETALIZATION_LVL + 1: MAX_DETALIZATION_LVL;
     } else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
         CURR_DETALIZATION_LVL = CURR_DETALIZATION_LVL != 0 ? CURR_DETALIZATION_LVL - 1 : 0;
     }
@@ -43,7 +43,7 @@ Camera &GameEngine::GetCamera() {
 
 GameEngine::GameEngine(const Window &window_,
                        const Camera &camera_,
-                       const Model &enemie_model_,
+                       const Model &enemy_model,
                        const Model &floor_cell_model_,
                        const Model &sky_model,
                        int floor_size_,
@@ -51,7 +51,7 @@ GameEngine::GameEngine(const Window &window_,
                        float spawn_radius_,
                        float collide_dist_) : window(window_),
                                               camera(camera_),
-                                              enemie_model(enemie_model_),
+                                              enemy_model_(enemy_model),
                                               floor_cell_model(floor_cell_model_),
                                               sky_model_(sky_model),
                                               floor_size(floor_size_),
@@ -77,7 +77,7 @@ GameEngine::GameEngine(const Window &window_,
     for (size_t i = 0; i < enemies_count; i++) {
         glm::vec3 pos = GetRandHorizVec(0, spawn_radius);
         glm::vec3 dir = glm::normalize(camera.GetPos() - pos);
-        active_enemies.emplace_back(enemie_model, pos, dir);
+        active_enemies.emplace_back(enemy_model_, pos, dir);
     }
 
     // Init floor
@@ -169,6 +169,7 @@ glm::vec3 GameEngine::GetRandHorizVec(int min, int max) {
 void GameEngine::Shoot() {
     active_projectiles.emplace_back(projectile_models[CURR_DETALIZATION_LVL], camera.GetPos() + 0.5f * camera.GetDir(),
                                     camera.GetDir(), 0.25f);
+
 }
 
 void GameEngine::UpdateProjectiles() {
@@ -220,6 +221,11 @@ void GameEngine::Update() {
     glfwSetWindowUserPointer(window.GetWindow(), this);
     glfwSetKeyCallback(window.GetWindow(), KeyCallback);
 
+    camera.Update();
+
+    UpdateProjectiles();
+    UpdateCollisions();
+
     // Check mouse for shoot
     if (glfwGetMouseButton(window.GetWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
         if (glfwGetTime() - last_shoot_time > 0.2f) {
@@ -228,16 +234,11 @@ void GameEngine::Update() {
         }
     }
 
-    camera.Update();
-
-    UpdateProjectiles();
-    UpdateCollisions();
-
     if ((int) glfwGetTime() % 1000 == 100) {
         for (size_t i = 0; i < 1; i++) {
             glm::vec3 pos = GetRandHorizVec(0, spawn_radius);
             glm::vec3 dir = glm::normalize(camera.GetPos() - pos);
-            active_enemies.emplace_back(enemie_model, pos, dir);
+            active_enemies.emplace_back(enemy_model_, pos, dir);
         }
     }
 

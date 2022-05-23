@@ -10,6 +10,7 @@
 #include "GameObject.hpp"
 #include "Fireball.hpp"
 
+
 class GameEngine
 {
     const float pi = 3.14159265359;
@@ -19,7 +20,7 @@ class GameEngine
     std::vector<Fireball> active_projectiles;
     std::vector<GameObject> sky_;
 
-    Model enemie_model;
+    Model enemy_model_;
     std::vector<Model> projectile_models;
     Model floor_cell_model;
     Model sky_model_;
@@ -56,7 +57,7 @@ class GameEngine
 public:
     GameEngine(const Window &window_,
                const Camera &camera_,
-               const Model &enemie_model_,
+               const Model &enemy_model,
                const Model &floor_cell_model_,
                const Model &sky_model,
                int floor_size_ = 10,

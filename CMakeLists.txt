@@ -32,7 +32,6 @@ endif(INCLUDE_DISTRIB)
 
 
 include_directories(
-		external/stb/
 	external/AntTweakBar-1.16/include/
 	external/glfw-3.1.2/include/
 	external/glm-0.9.7.1/
@@ -56,7 +55,6 @@ add_definitions(
 	-D_CRT_SECURE_NO_WARNINGS
 )
 
-# hw2_shooter
 add_executable(MineStrike
 	
 	MineStrike/main.cpp

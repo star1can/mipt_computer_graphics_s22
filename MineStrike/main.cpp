@@ -49,6 +49,7 @@ int main()
                  "assets/textures/zombie.DDS",
                  "assets/shaders/TransformVertexShader.vertexshader",
                  "assets/shaders/TextureFragmentShader.fragmentshader");
+
     Model grass("assets/models/cube.obj",
                 "assets/textures/grass_hd.DDS",
                 "assets/shaders/TransformVertexShader.vertexshader",
