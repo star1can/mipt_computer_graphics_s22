@@ -36,8 +36,8 @@ private:
 
 public:
     Camera(const Window &window_,
-           float movement_speed_ = 5.0f,
-           float mouse_speed_ = 0.05f,
+           float movement_speed_ = 4.0f,
+           float mouse_speed_ = 0.0051f,
            float fov_speed_ = 1.0f);
 
     void Update();

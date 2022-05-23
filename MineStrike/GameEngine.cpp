@@ -8,9 +8,25 @@
 
 // VERY BAD!
 const size_t MAX_DETALIZATION_LVL = 4;
-float SPEED = 1024.0f;
+float SPEED = 900.0f;
 size_t CURR_DETALIZATION_LVL = 4;
 float PARTICLE_SPEED = 0.8f;
+
+std::string GameEngine::GetGraphicsPreset() {
+    switch (CURR_DETALIZATION_LVL) {
+        case 0:
+            return "Very Low";
+        case 1:
+            return "Low";
+        case 2:
+            return "Medium";
+        case 3:
+            return "High";
+        case 4:
+            return "Ultra";
+    }
+    return "";
+}
 
 void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     auto *game_engine = static_cast<GameEngine *>(glfwGetWindowUserPointer(window));
@@ -29,11 +45,17 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods
         SPEED = std::fmax(10.f, SPEED * 0.75f);
         camera.SetMovementSpeed(curr_mov_speed * 0.75f);
         camera.SetMouseSpeed(curr_mouse_speed * 0.75f);
-        PARTICLE_SPEED = std::fmax(0.0005f, PARTICLE_SPEED * 0.75f);
+        PARTICLE_SPEED = std::fmax(0.00005f, PARTICLE_SPEED * 0.75f);
     } else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
-        CURR_DETALIZATION_LVL = CURR_DETALIZATION_LVL < 4? CURR_DETALIZATION_LVL + 1: MAX_DETALIZATION_LVL;
+        CURR_DETALIZATION_LVL = CURR_DETALIZATION_LVL < MAX_DETALIZATION_LVL? CURR_DETALIZATION_LVL + 1: MAX_DETALIZATION_LVL;
     } else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
         CURR_DETALIZATION_LVL = CURR_DETALIZATION_LVL != 0 ? CURR_DETALIZATION_LVL - 1 : 0;
+    }
+    else if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
+        game_engine->SetShootDelay(std::fmax(0.f, game_engine->GetShootDelay() - 0.1f));
+    }
+    else if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
+        game_engine->SetShootDelay(std::fmin(0.9f, game_engine->GetShootDelay() + 0.1f));
     }
 }
 
@@ -83,7 +105,7 @@ GameEngine::GameEngine(const Window &window_,
     // Init floor
     for (int i = -floor_size; i < floor_size; i++) {
         for (int j = -floor_size; j < floor_size; j++) {
-            glm::vec3 pos = glm::vec3(float(i), -1.0f, float(j));
+            glm::vec3 pos = glm::vec3(float(i), -0.90f, float(j));
             glm::vec3 dir = glm::vec3(0.0f, 1.0f, 0.0f);
             floor_cells.emplace_back(floor_cell_model, pos, dir, 0.5f);
         }
@@ -168,7 +190,7 @@ glm::vec3 GameEngine::GetRandHorizVec(int min, int max) {
 
 void GameEngine::Shoot() {
     active_projectiles.emplace_back(projectile_models[CURR_DETALIZATION_LVL], camera.GetPos() + 0.5f * camera.GetDir(),
-                                    camera.GetDir(), 0.25f);
+                                    camera.GetDir(), 0.15f);
 
 }
 
@@ -183,7 +205,7 @@ void GameEngine::UpdateProjectiles() {
                             return glm::length(projectile.GetPos()) > 50.0f;
                         }
                         else {
-                            return glm::length(projectile.GetModel().GetVertices()[0]) > 5.0f;
+                            return glm::length(projectile.GetModel().GetVertices()[0]) > 7.0f;
                         }
                     }
             ),
@@ -228,7 +250,7 @@ void GameEngine::Update() {
 
     // Check mouse for shoot
     if (glfwGetMouseButton(window.GetWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-        if (glfwGetTime() - last_shoot_time > 0.2f) {
+        if (glfwGetTime() - last_shoot_time > shoot_delay_) {
             Shoot();
             last_shoot_time = glfwGetTime();
         }
@@ -248,9 +270,16 @@ void GameEngine::Update() {
     DrawArray(active_enemies);
     DrawFireballs(active_projectiles);
 
-    std::string prefix("Score:");
-    std::string count(std::to_string(enemies_killed));
-    printText2D((prefix + count).data(), 10, 500, 40);
+    printText2D(("Score:" + std::to_string(enemies_killed)).data(), 10, 100, 40);
 
     last_update_time = glfwGetTime();
+}
+
+
+void GameEngine::SetShootDelay(float new_delay) {
+    shoot_delay_ = new_delay;
+}
+
+float GameEngine::GetShootDelay() {
+    return shoot_delay_;
 }

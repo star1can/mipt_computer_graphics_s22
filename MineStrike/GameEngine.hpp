@@ -31,6 +31,7 @@ class GameEngine
     float spawn_radius;
     float collide_dist;
     GLuint vertex_array_id;
+    float shoot_delay_ = 0.2f;
 
     double last_shoot_time;
     double last_update_time;
@@ -54,6 +55,8 @@ class GameEngine
 
     void DrawFireballs(std::vector<Fireball> &fireballs);
 
+    std::string GetGraphicsPreset();
+
 public:
     GameEngine(const Window &window_,
                const Camera &camera_,
@@ -67,4 +70,6 @@ public:
 
     void Update();
     Camera& GetCamera();
+    void SetShootDelay(float new_delay);
+    float GetShootDelay();
 };
